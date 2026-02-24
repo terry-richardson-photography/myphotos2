@@ -41,7 +41,16 @@ export default function SessionPage() {
 
    return (
   <main className="min-h-screen bg-black text-white px-6 py-20">
-
+    
+<div className="max-w-6xl mx-auto mb-12">
+  <Link
+    href="/"
+    className="inline-flex items-center gap-2 border border-neutral-300 px-5 py-2 rounded-full text-xs tracking-widest uppercase text-neutral-600 hover:text-black hover:border-black transition duration-300"
+  >
+    <span className="text-lg">←</span>
+    Back to Home
+  </Link>
+</div>
     {/* Content Wrapper */}
     <div className="max-w-6xl mx-auto">
 
