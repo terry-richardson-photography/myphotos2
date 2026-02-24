@@ -27,6 +27,12 @@ export default function SessionPage() {
     }`;
 
     const data = await sanityClient.fetch(query, { slug });
+    setSession(data);
+  }
+
+  fetchSession();
+}, [slug]);
+    const data = await sanityClient.fetch(query, { slug });
 
     setSession(data);
   }
@@ -46,7 +52,7 @@ export default function SessionPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white px-6 py-16">
+    <main className="min-h-screen bg-black text-white px-6 py-16">
       <h1 className="text-4xl font-serif text-center mb-6">
         {session.title}
       </h1>
