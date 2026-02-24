@@ -7,23 +7,34 @@ import Image from "next/image";
 import { sanityClient } from "../../../lib/sanity";
 import { urlFor } from "../../../lib/image";
 
+type Session = {
+  title: string;
+  slug: { current: string };
+  gallery: {
+    image: any;
+    caption?: string;
+  }[];
+};
+
 export default function CategoryPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     async function fetchSessions() {
       const categoryName =
         slug.charAt(0).toUpperCase() + slug.slice(1);
 
-      const query = `*[_type == "photo"] | order(_createdAt desc){
-  title,
-  slug,
-  category,
-  gallery
-}`;
+      const query = `*[_type == "photo" && category == "${categoryName}"]{
+        title,
+        slug,
+        "gallery": gallery[]{
+          "image": image,
+          caption
+        }
+      }`;
 
       const data = await sanityClient.fetch(query);
       setSessions(data);
@@ -41,7 +52,8 @@ export default function CategoryPage() {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         {sessions.map((session) => {
           const coverImage = session.gallery?.[0];
-          if (!coverImage) return null;
+
+          if (!coverImage?.image) return null;
 
           return (
             <Link
@@ -50,7 +62,9 @@ export default function CategoryPage() {
             >
               <div className="cursor-pointer group">
                 <Image
-                  src={urlFor(coverImage).width(1200).url()}
+                  src={urlFor(coverImage.image)
+                    .width(1200)
+                    .url()}
                   alt={session.title}
                   width={1200}
                   height={800}
