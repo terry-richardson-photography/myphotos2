@@ -31,9 +31,7 @@ export default defineType({
         list: [
           { title: "Family", value: "Family" },
           { title: "Travel", value: "Travel" },
-          { title: "Landscape", value: "Landscape" },
-          { title: "Portrait", value: "Portrait" },
-          { title: "Commercial", value: "Commercial" },
+          { title: "General", value: "General" },
         ],
       },
       validation: (Rule) => Rule.required(),

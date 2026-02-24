@@ -21,25 +21,24 @@ export default function HomePage() {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
-  if (!slug) return;
+    async function fetchSessions() {
+      const query = `*[_type == "photo"] | order(_createdAt desc){
+        _id,
+        title,
+        slug,
+        category,
+        "gallery": gallery[]{
+          "image": image,
+          caption
+        }
+      }`;
 
-  async function fetchSession() {
-    const query = `*[_type == "photo" && slug.current == $slug][0]{
-      title,
-      description,
-      category,
-      "gallery": gallery[]{
-        "image": image,
-        caption
-      }
-    }`;
+      const data = await sanityClient.fetch(query);
+      setSessions(data);
+    }
 
-    const data = await sanityClient.fetch(query, { slug });
-    setSession(data);
-  }
-
-  fetchSession();
-}, [slug]);
+    fetchSessions();
+  }, []);
 
   const categories = [
     "Family",
@@ -50,78 +49,56 @@ export default function HomePage() {
   ];
 
   return (
-  <main className="min-h-screen bg-white text-neutral-900">
+    <main className="min-h-screen bg-white text-neutral-900">
 
-    {/* SPLIT NAVIGATION */}
-    <div className="max-w-7xl mx-auto px-6 py-10 flex justify-between items-center">
+      {/* HERO */}
+      <section className="py-24 text-center px-6">
+        <h1 className="text-5xl md:text-6xl font-serif tracking-tight">
+          Terry Richardson Photography
+        </h1>
+      </section>
 
-      {/* Brand */}
-      <Link
-        href="/"
-        className="text-sm tracking-[0.25em] uppercase font-medium text-neutral-700 hover:text-black transition"
-      >
-        Terry Richardson
-      </Link>
+      {/* CATEGORY GRID */}
+      <section className="px-6 pb-24">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
 
-      {/* Contact */}
-      <Link
-        href="/contact"
-        className="inline-flex items-center gap-2 border border-neutral-300 px-5 py-2 rounded-full text-xs tracking-widest uppercase text-neutral-600 hover:text-black hover:border-black transition duration-300"
-      >
-        Contact
-        <span className="text-lg">→</span>
-      </Link>
+          {categories.map((category) => {
 
-    </div>
+            const session = sessions.find(
+              (s) => s.category === category
+            );
 
-    {/* HERO */}
-    <section className="pb-16 text-center px-6">
-      <h1 className="text-5xl md:text-6xl font-serif tracking-tight">
-        Photography Portfolio
-      </h1>
-    </section>
+            if (!session?.gallery?.[0]?.image) return null;
 
-    {/* CATEGORY GRID */}
-    <section className="px-6 pb-24">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
+            return (
+              <Link
+                key={category}
+                href={`/category/${category.toLowerCase()}`}
+              >
+                <div className="group cursor-pointer">
 
-        {categories.map((category) => {
+                  <Image
+                    src={urlFor(session.gallery[0].image)
+                      .width(1200)
+                      .url()}
+                    alt={category}
+                    width={1200}
+                    height={800}
+                    className="rounded-2xl object-cover h-72 w-full group-hover:opacity-90 transition duration-500"
+                  />
 
-          const session = sessions.find(
-            (s) => s.category === category
-          );
+                  <h2 className="mt-6 text-xl font-serif text-center tracking-wide">
+                    {category}
+                  </h2>
 
-          if (!session?.gallery?.[0]?.image) return null;
+                </div>
+              </Link>
+            );
+          })}
 
-          return (
-            <Link
-              key={category}
-              href={`/category/${category.toLowerCase()}`}
-            >
-              <div className="group cursor-pointer">
+        </div>
+      </section>
 
-                <Image
-                  src={urlFor(session.gallery[0].image)
-                    .width(1200)
-                    .url()}
-                  alt={category}
-                  width={1200}
-                  height={800}
-                  className="rounded-2xl object-cover h-72 w-full group-hover:opacity-90 transition duration-500"
-                />
-
-                <h2 className="mt-6 text-xl font-serif text-center tracking-wide">
-                  {category}
-                </h2>
-
-              </div>
-            </Link>
-          );
-        })}
-
-      </div>
-    </section>
-
-  </main>
-);
+    </main>
+  );
 }
