@@ -18,11 +18,12 @@ export default function CategoryPage() {
       const categoryName =
         slug.charAt(0).toUpperCase() + slug.slice(1);
 
-      const query = `*[_type == "photo" && category == "${categoryName}"]{
-        title,
-        slug,
-        gallery
-      }`;
+      const query = `*[_type == "photo"] | order(_createdAt desc){
+  title,
+  slug,
+  category,
+  gallery
+}`;
 
       const data = await sanityClient.fetch(query);
       setSessions(data);

@@ -23,7 +23,6 @@ export default function HomePage() {
 
   useEffect(() => {
     async function fetchSessions() {
-
       const query =
         selectedCategory === "All"
           ? `*[_type == "photo"] | order(_createdAt desc){
@@ -42,9 +41,6 @@ export default function HomePage() {
             }`;
 
       const data = await sanityClient.fetch(query);
-
-      console.log("SANITY RAW:", data);
-
       setSessions(data);
     }
 
@@ -89,42 +85,45 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SESSION GRID */}
+      {/* CATEGORY GRID */}
       <section className="px-6 pb-24">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
 
-          {sessions.map((session) => {
-            if (!session.gallery?.[0]?.image) return null;
+          {categories
+            .filter((cat) => cat !== "All")
+            .map((category) => {
 
-            const imageUrl = urlFor(session.gallery[0].image)
-              .width(1200)
-              .url();
+              const session = sessions.find(
+                (s) => s.category === category
+              );
 
-            return (
-              <Link
-                key={session._id}
-                href={`/sessions/${session.slug.current}`}
-                className="block overflow-hidden rounded-2xl shadow-md"
-              >
-                <Image
-                  src={imageUrl}
-                  alt={session.title}
-                  width={1200}
-                  height={800}
-                  className="object-cover w-full h-80 hover:scale-105 transition duration-500"
-                />
-                <div className="p-4 bg-white">
-                  <h3 className="font-serif text-lg">
-                    {session.title}
-                  </h3>
-                  <p className="text-sm text-neutral-500">
-                    {session.category}
-                  </p>
-                </div>
-              </Link>
-            );
-          })}
+              if (!session?.gallery?.[0]) return null;
 
+              return (
+                <Link
+                  key={category}
+                  href={`/category/${category.toLowerCase()}`}
+                >
+                  <div className="group cursor-pointer">
+
+                    <Image
+                      src={urlFor(session.gallery[0])
+                        .width(1200)
+                        .url()}
+                      alt={category}
+                      width={1200}
+                      height={800}
+                      className="rounded-2xl object-cover h-72 w-full group-hover:opacity-90 transition duration-500"
+                    />
+
+                    <h2 className="mt-6 text-2xl font-serif text-center tracking-wide">
+                      {category}
+                    </h2>
+
+                  </div>
+                </Link>
+              );
+            })}
         </div>
       </section>
 
