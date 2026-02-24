@@ -21,24 +21,25 @@ export default function HomePage() {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
-    async function fetchSessions() {
-      const query = `*[_type == "photo"] | order(_createdAt desc){
-        _id,
-        title,
-        slug,
-        category,
-        "gallery": gallery[]{
-          "image": image,
-          caption
-        }
-      }`;
+  if (!slug) return;
 
-      const data = await sanityClient.fetch(query);
-      setSessions(data);
-    }
+  async function fetchSession() {
+    const query = `*[_type == "photo" && slug.current == $slug][0]{
+      title,
+      description,
+      category,
+      "gallery": gallery[]{
+        "image": image,
+        caption
+      }
+    }`;
 
-    fetchSessions();
-  }, []);
+    const data = await sanityClient.fetch(query, { slug });
+    setSession(data);
+  }
+
+  fetchSession();
+}, [slug]);
 
   const categories = [
     "Family",
