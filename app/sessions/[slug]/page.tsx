@@ -14,15 +14,25 @@ export default function SessionPage() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    async function fetchSession() {
-      const query = `*[_type == "photo" && slug.current == "${slug}"][0]{
-        title,
-        description,
-        "gallery": gallery[]{
-          "image": image,
-          caption
-        }
-      }`;
+  if (!slug) return;
+
+  async function fetchSession() {
+    const query = `*[_type == "photo" && slug.current == $slug][0]{
+      title,
+      description,
+      "gallery": gallery[]{
+        "image": image,
+        caption
+      }
+    }`;
+
+    const data = await sanityClient.fetch(query, { slug });
+
+    setSession(data);
+  }
+
+  fetchSession();
+}, [slug]);
 
       const data = await sanityClient.fetch(query);
       setSession(data);
