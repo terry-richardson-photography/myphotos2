@@ -9,7 +9,7 @@ import { urlFor } from "../../../lib/image";
 
 type Session = {
   title: string;
-  slug: { current: string };
+  slug: string; // flattened
   gallery: {
     image: any;
     caption?: string;
@@ -18,18 +18,18 @@ type Session = {
 
 export default function CategoryPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slugParam = params.slug as string;
 
   const [sessions, setSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     async function fetchSessions() {
       const categoryName =
-        slug.charAt(0).toUpperCase() + slug.slice(1);
+        slugParam.charAt(0).toUpperCase() + slugParam.slice(1);
 
       const query = `*[_type == "photo" && category == "${categoryName}"]{
         title,
-        slug,
+        "slug": slug.current,
         "gallery": gallery[]{
           "image": image,
           caption
@@ -41,24 +41,23 @@ export default function CategoryPage() {
     }
 
     fetchSessions();
-  }, [slug]);
+  }, [slugParam]);
 
   return (
     <main className="min-h-screen bg-white px-6 py-16">
       <h1 className="text-4xl font-serif text-center mb-12 capitalize">
-        {slug} Sessions
+        {slugParam} Sessions
       </h1>
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         {sessions.map((session) => {
           const coverImage = session.gallery?.[0];
-
           if (!coverImage?.image) return null;
 
           return (
             <Link
-              key={session.slug.current}
-              href={`/session/${session.slug.current}`}
+              key={session.slug}
+              href={`/sessions/${session.slug}`}
             >
               <div className="cursor-pointer group">
                 <Image
