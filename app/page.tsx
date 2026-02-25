@@ -40,18 +40,15 @@ export default function HomePage() {
     fetchSessions();
   }, []);
 
-  const categories = [
-    "Family",
-    "Travel",
-    "Landscape",
-    "Portrait",
-    "Commercial",
-  ];
+  const categories = Array.from(
+  new Set(sessions.map((s) => s.category))
+);
 
   return (
     <main className="min-h-screen bg-white text-neutral-900">
 
       {/* HERO */}
+
       <section className="py-24 text-center px-6">
         <h1 className="text-5xl md:text-6xl font-serif tracking-tight">
           Terry Richardson Photography
