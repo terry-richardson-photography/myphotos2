@@ -43,6 +43,15 @@ export default defineType({
       type: "text",
     }),
 
+    // 🔐 PASSWORD FIELD
+    defineField({
+      name: "password",
+      title: "Session Password (Optional)",
+      type: "string",
+      description:
+        "Leave empty for public sessions. Add a password to protect this session.",
+    }),
+
     defineField({
       name: "gallery",
       title: "Image Gallery",
