@@ -23,3 +23,9 @@ body {
   background-color: black;
   color: white;
 }
+
+/* Disable image dragging + selection */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}

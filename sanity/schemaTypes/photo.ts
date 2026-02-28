@@ -5,6 +5,7 @@ export default defineType({
   title: "Session",
   type: "document",
   fields: [
+    // 🔹 Title
     defineField({
       name: "title",
       title: "Session Title",
@@ -12,6 +13,7 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
+    // 🔹 Slug
     defineField({
       name: "slug",
       title: "Slug",
@@ -23,35 +25,62 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
+    // 🔹 Category
     defineField({
       name: "category",
       title: "Category",
       type: "string",
       options: {
         list: [
-          { title: "Family", value: "Family" },
-          { title: "Travel", value: "Travel" },
-          { title: "General", value: "General" },
+          { title: "Family", value: "family" },
+          { title: "Travel", value: "travel" },
+          { title: "General", value: "general" },
+          { title: "Commercial", value: "commercial" },
         ],
+        layout: "dropdown",
       },
       validation: (Rule) => Rule.required(),
     }),
 
+  
+
+    // 🔹 Shoot Date (for sorting)
+    defineField({
+      name: "shootDate",
+      title: "Shoot Date",
+      type: "date",
+      options: {
+        dateFormat: "DD MMM YYYY",
+      },
+    }),
+
+    // 🔹 Description (SEO + intro text)
     defineField({
       name: "description",
       title: "Description",
       type: "text",
+      rows: 3,
     }),
 
-    // 🔐 PASSWORD FIELD
+    // 🔹 Featured Toggle (homepage control)
+    defineField({
+      name: "featured",
+      title: "Featured Session",
+      type: "boolean",
+      initialValue: false,
+    }),
+
+    // 🔐 Password (Optional Protection)
     defineField({
       name: "password",
       title: "Session Password (Optional)",
       type: "string",
       description:
         "Leave empty for public sessions. Add a password to protect this session.",
+      validation: (Rule) => Rule.max(50),
     }),
 
+    // 🔹 Image Gallery
     defineField({
       name: "gallery",
       title: "Image Gallery",
@@ -71,6 +100,11 @@ export default defineType({
             {
               name: "caption",
               title: "Caption",
+              type: "string",
+            },
+            {
+              name: "alt",
+              title: "Alt Text",
               type: "string",
             },
           ],

@@ -12,6 +12,7 @@
     "@sanity/client": "^7.15.0",
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^4.22.0",
+    "bcryptjs": "^3.0.3",
     "next": "16.1.6",
     "next-sanity": "^11.6.12",
     "react": "19.2.3",

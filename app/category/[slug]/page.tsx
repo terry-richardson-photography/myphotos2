@@ -10,6 +10,7 @@ import { urlFor } from "../../../lib/image";
 type Session = {
   title: string;
   slug: string;
+  password?: string;
   gallery: {
     image: any;
     caption?: string;
@@ -18,43 +19,61 @@ type Session = {
 
 export default function CategoryPage() {
   const params = useParams();
-  const slugParam = params.slug as string;
+
+  const slugParam = Array.isArray(params.slug)
+    ? params.slug[0]
+    : params.slug;
 
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slugParam) return;
 
     async function fetchSessions() {
-      const categoryName =
-        slugParam.charAt(0).toUpperCase() + slugParam.slice(1);
-
-      const query = `*[_type == "photo" && category == "${categoryName}"]{
+      const query = `*[_type == "photo" && lower(category) == lower($category)]{
         title,
+        password,
         "slug": slug.current,
         "gallery": gallery[]{
-          "image": image,
+          image,
           caption
         }
       }`;
 
-      const data = await sanityClient.fetch(query);
+      const data = await sanityClient.fetch(query, {
+        category: slugParam,
+      });
+
       setSessions(data);
+      setLoading(false);
     }
 
     fetchSessions();
   }, [slugParam]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
   return (
-    <main className="min-h-screen pt-20 px-6">
+    <main className="min-h-screen bg-black text-white px-6 py-20">
       <div className="max-w-6xl mx-auto">
 
-        {/* Title */}
-        <h1 className="text-4xl md:text-5xl font-serif text-center mb-20 tracking-tight capitalize">
+        <h1 className="text-4xl md:text-5xl font-serif text-center mb-20 capitalize">
           {slugParam}
         </h1>
 
-        {/* Session Grid */}
+        {sessions.length === 0 && (
+          <div className="text-center text-white/60">
+            No sessions found.
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
           {sessions.map((session) => {
             const coverImage = session.gallery?.[0];
@@ -65,11 +84,18 @@ export default function CategoryPage() {
                 key={session.slug}
                 href={`/sessions/${session.slug}`}
               >
-                <div className="group cursor-pointer">
+                <div className="group cursor-pointer relative">
+
+                  {session.password && (
+                    <div className="absolute top-4 left-4 z-10 bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full text-[9px] tracking-[0.3em] uppercase text-white/80 border border-white/20">
+                      Private
+                    </div>
+                  )}
 
                   <Image
                     src={urlFor(coverImage.image)
                       .width(1200)
+                      .quality(75)
                       .url()}
                     alt={session.title}
                     width={1200}
