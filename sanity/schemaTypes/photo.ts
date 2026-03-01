@@ -42,9 +42,17 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-  
+    // 🖼 COVER IMAGE (for homepage + category previews)
+    defineField({
+      name: "coverImage",
+      title: "Cover Image",
+      type: "image",
+      options: { hotspot: true },
+      description:
+        "This image is used for homepage and category previews. If empty, the first gallery image will be used.",
+    }),
 
-    // 🔹 Shoot Date (for sorting)
+    // 🔹 Shoot Date
     defineField({
       name: "shootDate",
       title: "Shoot Date",
@@ -54,7 +62,7 @@ export default defineType({
       },
     }),
 
-    // 🔹 Description (SEO + intro text)
+    // 🔹 Description
     defineField({
       name: "description",
       title: "Description",
@@ -62,7 +70,7 @@ export default defineType({
       rows: 3,
     }),
 
-    // 🔹 Featured Toggle (homepage control)
+    // 🔹 Featured Toggle
     defineField({
       name: "featured",
       title: "Featured Session",
@@ -70,7 +78,7 @@ export default defineType({
       initialValue: false,
     }),
 
-    // 🔐 Password (Optional Protection)
+    // 🔐 Password
     defineField({
       name: "password",
       title: "Session Password (Optional)",

@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
+/* Base Colors */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -12,13 +13,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Body Styling */
 body {
   background-color: black;
   color: white;
@@ -28,4 +23,24 @@ body {
 img {
   -webkit-user-drag: none;
   user-select: none;
+}
+
+/* ========================= */
+/*  Cinematic Fade + Zoom    */
+/* ========================= */
+
+@keyframes fadeZoom {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Optional utility class if you prefer class instead of inline style */
+.animate-fade-zoom {
+  animation: fadeZoom 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }

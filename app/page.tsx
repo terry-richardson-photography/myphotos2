@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -11,10 +11,7 @@ type Session = {
   title: string;
   slug: { current: string };
   category: string;
-  gallery: {
-    image: any;
-    caption?: string;
-  }[];
+  coverImage?: any;
 };
 
 export default function HomePage() {
@@ -27,10 +24,7 @@ export default function HomePage() {
         title,
         slug,
         category,
-        "gallery": gallery[]{
-          "image": image,
-          caption
-        }
+        coverImage
       }`;
 
       const data = await sanityClient.fetch(query);
@@ -41,18 +35,23 @@ export default function HomePage() {
   }, []);
 
   const categories = Array.from(
-  new Set(sessions.map((s) => s.category))
-);
+    new Set(sessions.map((s) => s.category))
+  );
 
   return (
-   <main className="min-h-screen">
+    <main className="min-h-screen">
 
       {/* HERO */}
-
       <section className="py-24 text-center px-6">
         <h1 className="text-5xl md:text-6xl font-serif tracking-tight">
           Terry Richardson Photography
         </h1>
+
+        <p className="mt-8 max-w-2xl mx-auto text-white/70 text-lg leading-relaxed">
+          Capturing authentic moments across family, travel, commercial and lifestyle photography.
+          Every session is crafted with care — natural light, genuine emotion,
+          and timeless composition.
+        </p>
       </section>
 
       {/* CATEGORY GRID */}
@@ -62,10 +61,11 @@ export default function HomePage() {
           {categories.map((category) => {
 
             const session = sessions.find(
-              (s) => s.category === category
+              (s) => s.category === category && s.coverImage
             );
 
-            if (!session?.gallery?.[0]?.image) return null;
+            // 🛑 SAFETY CHECK — prevents crash
+            if (!session || !session.coverImage) return null;
 
             return (
               <Link
@@ -75,8 +75,9 @@ export default function HomePage() {
                 <div className="group cursor-pointer">
 
                   <Image
-                    src={urlFor(session.gallery[0].image)
+                    src={urlFor(session.coverImage)
                       .width(1200)
+                      .quality(80)
                       .url()}
                     alt={category}
                     width={1200}
@@ -84,7 +85,7 @@ export default function HomePage() {
                     className="rounded-2xl object-cover h-72 w-full group-hover:opacity-90 transition duration-500"
                   />
 
-                  <h2 className="mt-6 text-xl font-serif text-center tracking-wide">
+                  <h2 className="mt-6 text-xl font-serif text-center tracking-wide capitalize">
                     {category}
                   </h2>
 
