@@ -1,18 +1,37 @@
 import { createClient } from "@sanity/client";
 
-// Public client (browser safe)
+/*
+  IMPORTANT:
+  Make sure these exist in:
+  - .env.local
+  - Vercel Environment Variables
+*/
+
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
+const apiVersion =
+  process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-01-01";
+
+/*
+  PUBLIC CLIENT
+  Safe for browser (no token)
+  Uses CDN for speed
+*/
 export const sanityClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-01-01",
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: true,
 });
 
-// Server client (secure fetch for password sessions)
+/*
+  SERVER CLIENT
+  Runs only on server
+  No CDN (fresh data)
+*/
 export const sanityServerClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-01-01",
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: false,
-  token: process.env.SANITY_API_READ_TOKEN,
 });

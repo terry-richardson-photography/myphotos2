@@ -146,75 +146,83 @@ export default function Gallery({ session }: any) {
       </div>
 
       {/* LIGHTBOX */}
-      {activeIndex !== null && gallery[activeIndex] && (
-        <div
-          className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
-          onClick={() => setActiveIndex(null)}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          <div
-            className="relative text-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative inline-block">
+{activeIndex !== null && gallery[activeIndex] && (
+  <div
+    className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
+    onClick={() => setActiveIndex(null)}
+    onTouchStart={onTouchStart}
+    onTouchMove={onTouchMove}
+    onTouchEnd={onTouchEnd}
+  >
+    <div
+      className="relative text-center"
+      onClick={(e) => e.stopPropagation()}
+    >
 
-              <img
-                key={activeIndex}
-                src={urlFor(gallery[activeIndex].image)
-                  .width(2400)
-                  .quality(90)
-                  .url()}
-                draggable={false}
-                onContextMenu={(e) => e.preventDefault()}
-                className="max-h-[85vh] max-w-[95vw] object-contain rounded-xl animate-fade-zoom"
-              />
+      {/* IMAGE WRAPPER */}
+      <div className="relative inline-block">
 
-              <div className="absolute bottom-4 right-4 text-white text-xs md:text-sm tracking-widest uppercase opacity-40 pointer-events-none drop-shadow-md">
-                Terry Richardson Photography
-              </div>
-            </div>
+        <img
+          key={activeIndex}
+          src={urlFor(gallery[activeIndex].image)
+            .width(2400)
+            .quality(90)
+            .url()}
+          draggable={false}
+          onContextMenu={(e) => e.preventDefault()}
+          className="max-h-[85vh] max-w-[95vw] object-contain rounded-xl animate-fade-zoom"
+        />
 
-            {gallery[activeIndex].caption && (
-              <p className="mt-6 text-white/70 text-sm md:text-base tracking-wide">
-                {gallery[activeIndex].caption}
-              </p>
-            )}
-
-            {/* Desktop arrows */}
-            <button
-              onClick={() =>
-                setActiveIndex((prev) =>
-                  prev === 0 ? gallery.length - 1 : (prev ?? 0) - 1
-                )
-              }
-              className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl"
-            >
-              ‹
-            </button>
-
-            <button
-              onClick={() =>
-                setActiveIndex((prev) =>
-                  prev === gallery.length - 1 ? 0 : (prev ?? 0) + 1
-                )
-              }
-              className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl"
-            >
-              ›
-            </button>
-
-            <button
-              onClick={() => setActiveIndex(null)}
-              className="absolute top-4 right-4 text-white text-3xl"
-            >
-              ✕
-            </button>
-
-          </div>
+        {/* WATERMARK */}
+        <div className="absolute bottom-4 right-4 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-md text-white text-xs md:text-sm tracking-widest uppercase pointer-events-none">
+          Terry Richardson Photography
         </div>
+
+      </div>
+
+      {/* CAPTION */}
+      {gallery[activeIndex].caption && (
+        <p className="mt-6 text-white/70 text-sm md:text-base tracking-wide">
+          {gallery[activeIndex].caption}
+        </p>
       )}
+
+      {/* LEFT ARROW */}
+      <button
+        onClick={() =>
+          setActiveIndex((prev) =>
+            prev === 0 ? gallery.length - 1 : (prev ?? 0) - 1
+          )
+        }
+        className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl"
+      >
+        ‹
+      </button>
+
+      {/* RIGHT ARROW */}
+      <button
+        onClick={() =>
+          setActiveIndex((prev) =>
+            prev === gallery.length - 1 ? 0 : (prev ?? 0) + 1
+          )
+        }
+        className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl"
+      >
+        ›
+      </button>
+
+      {/* CLOSE */}
+      <button
+        onClick={() => setActiveIndex(null)}
+        className="absolute top-4 right-4 text-white text-3xl"
+      >
+        ✕
+      </button>
+
+    </div>
+  </div>
+)}
+
     </main>
   );
 }
