@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
+import Protection from "./Protection";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,34 +26,33 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
-      >
-        {/* GLOBAL NAVIGATION */}
-        <header className="max-w-6xl mx-auto px-6 py-8 flex justify-between items-center border-b border-white/10">
+      <body className="bg-black text-white select-none">
+        <Protection />
 
-          {/* Brand */}
-          <Link
-            href="/"
-            className="text-sm tracking-[0.25em] uppercase font-medium text-white"
-          >
-            Terry Richardson
-          </Link>
+        {/* Header */}
+        <header className="w-full border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
 
-          {/* Navigation */}
-         <div className="flex gap-8 text-[11px] tracking-[0.25em] uppercase text-white">
-            <Link href="/" className="hover:text-white transition duration-300">
-              Home
+            <Link
+              href="/"
+              className="text-sm tracking-[0.3em] uppercase"
+            >
+              Terry Richardson
             </Link>
-            <Link href="/about" className="hover:text-white transition duration-300">
-              About
-            </Link>
+
+            <nav className="flex gap-10 text-xs tracking-[0.3em] uppercase text-white/70">
+              <Link href="/" className="hover:text-white transition">
+                Home
+              </Link>
+              <Link href="/about" className="hover:text-white transition">
+                About
+              </Link>
+            </nav>
+
           </div>
-
         </header>
 
-        {children}
-
+        <main>{children}</main>
       </body>
     </html>
   );
