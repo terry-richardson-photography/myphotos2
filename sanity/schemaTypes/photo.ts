@@ -5,7 +5,6 @@ export default defineType({
   title: "Session",
   type: "document",
   fields: [
-    // 🔹 Title
     defineField({
       name: "title",
       title: "Session Title",
@@ -13,7 +12,6 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // 🔹 Slug
     defineField({
       name: "slug",
       title: "Slug",
@@ -25,34 +23,44 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // 🔹 Category
-    defineField({
-      name: "category",
-      title: "Category",
-      type: "string",
-      options: {
-        list: [
-          { title: "Family", value: "family" },
-          { title: "Travel", value: "travel" },
-          { title: "General", value: "general" },
-          { title: "Commercial", value: "commercial" },
-        ],
-        layout: "dropdown",
-      },
-      validation: (Rule) => Rule.required(),
-    }),
+    // ✅ NEW STRUCTURE
+// 🔹 Category
+defineField({
+  name: "category",
+  title: "Category",
+  type: "string",
+  options: {
+    list: [
+      { title: "Family", value: "family" },
+      { title: "Travel", value: "travel" },
+      { title: "General", value: "general" },
+      { title: "Commercial", value: "commercial" },
+       { title: "Sport", value: "sport" },
+    ],
+    layout: "dropdown",
+  },
+  validation: (Rule) => Rule.required(),
+}),
 
-    // 🖼 COVER IMAGE (for homepage + category previews)
+  defineField({
+  name: "subcategory",
+  title: "Subcategories",
+  type: "array",
+  of: [
+    {
+      type: "reference",
+      to: [{ type: "subcategory" }],
+    },
+  ],
+}),
+
     defineField({
       name: "coverImage",
       title: "Cover Image",
       type: "image",
       options: { hotspot: true },
-      description:
-        "This image is used for homepage and category previews. If empty, the first gallery image will be used.",
     }),
 
-    // 🔹 Shoot Date
     defineField({
       name: "shootDate",
       title: "Shoot Date",
@@ -62,7 +70,6 @@ export default defineType({
       },
     }),
 
-    // 🔹 Description
     defineField({
       name: "description",
       title: "Description",
@@ -70,7 +77,6 @@ export default defineType({
       rows: 3,
     }),
 
-    // 🔹 Featured Toggle
     defineField({
       name: "featured",
       title: "Featured Session",
@@ -78,17 +84,13 @@ export default defineType({
       initialValue: false,
     }),
 
-    // 🔐 Password
     defineField({
       name: "password",
       title: "Session Password (Optional)",
       type: "string",
-      description:
-        "Leave empty for public sessions. Add a password to protect this session.",
       validation: (Rule) => Rule.max(50),
     }),
 
-    // 🔹 Image Gallery
     defineField({
       name: "gallery",
       title: "Image Gallery",

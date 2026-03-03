@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "../../../lib/image";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Gallery({ session }: any) {
   if (!session) {
@@ -22,6 +23,19 @@ export default function Gallery({ session }: any) {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const minSwipeDistance = 50;
+
+  // 🔒 Lock background scroll when lightbox open
+  useEffect(() => {
+    if (activeIndex !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [activeIndex]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -100,7 +114,7 @@ export default function Gallery({ session }: any) {
   };
 
   return (
-    <main
+    <div
       className="min-h-screen bg-black text-white px-6 py-20"
       onContextMenu={(e) => e.preventDefault()}
     >
@@ -145,84 +159,90 @@ export default function Gallery({ session }: any) {
         </div>
       </div>
 
-      {/* LIGHTBOX */}
-{activeIndex !== null && gallery[activeIndex] && (
-  <div
-    className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
-    onClick={() => setActiveIndex(null)}
-    onTouchStart={onTouchStart}
-    onTouchMove={onTouchMove}
-    onTouchEnd={onTouchEnd}
-  >
-    <div
-      className="relative text-center"
-      onClick={(e) => e.stopPropagation()}
-    >
+           {/* LIGHTBOX */}
+      {activeIndex !== null && gallery[activeIndex] && (
+        <div
+          className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
+          onClick={() => setActiveIndex(null)}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <div
+            className="relative text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* IMAGE WRAPPER */}
+            <div className="relative inline-block">
 
-      {/* IMAGE WRAPPER */}
-      <div className="relative inline-block">
+              <AnimatePresence mode="wait">
+               <motion.img
+  key={activeIndex}
+  src={urlFor(gallery[activeIndex].image)
+    .width(2400)
+    .quality(90)
+    .url()}
+  initial={{ x: 400, opacity: 0, scale: 0.98 }}
+  animate={{ x: 0, opacity: 1, scale: 1 }}
+  exit={{ x: -400, opacity: 0, scale: 0.98 }}
+  transition={{
+    duration: 0.6,
+    ease: [0.22, 1, 0.36, 1]
+  }}
+  draggable={false}
+  className="max-h-[85vh] max-w-[95vw] object-contain rounded-xl"
+/>
+              </AnimatePresence>
 
-        <img
-          key={activeIndex}
-          src={urlFor(gallery[activeIndex].image)
-            .width(2400)
-            .quality(90)
-            .url()}
-          draggable={false}
-          onContextMenu={(e) => e.preventDefault()}
-          className="max-h-[85vh] max-w-[95vw] object-contain rounded-xl animate-fade-zoom"
-        />
+              {/* WATERMARK */}
+              <div className="absolute bottom-4 right-4 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-md text-white text-xs md:text-sm tracking-widest uppercase pointer-events-none">
+                Terry Richardson Photography
+              </div>
 
-        {/* WATERMARK */}
-        <div className="absolute bottom-4 right-4 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-md text-white text-xs md:text-sm tracking-widest uppercase pointer-events-none">
-          Terry Richardson Photography
+            </div>
+
+            {/* CAPTION */}
+            {gallery[activeIndex].caption && (
+              <p className="mt-6 text-white/70 text-sm md:text-base tracking-wide">
+                {gallery[activeIndex].caption}
+              </p>
+            )}
+
+            {/* LEFT ARROW */}
+            <button
+              onClick={() =>
+                setActiveIndex((prev) =>
+                  prev === 0 ? gallery.length - 1 : (prev ?? 0) - 1
+                )
+              }
+              className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl opacity-70 hover:opacity-100 transition"
+            >
+              ‹
+            </button>
+
+            {/* RIGHT ARROW */}
+            <button
+              onClick={() =>
+                setActiveIndex((prev) =>
+                  prev === gallery.length - 1 ? 0 : (prev ?? 0) + 1
+                )
+              }
+              className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl opacity-70 hover:opacity-100 transition"
+            >
+              ›
+            </button>
+
+            {/* CLOSE */}
+            <button
+              onClick={() => setActiveIndex(null)}
+              className="absolute top-4 right-4 text-white text-3xl opacity-70 hover:opacity-100 transition"
+            >
+              ✕
+            </button>
+
+          </div>
         </div>
-
-      </div>
-
-      {/* CAPTION */}
-      {gallery[activeIndex].caption && (
-        <p className="mt-6 text-white/70 text-sm md:text-base tracking-wide">
-          {gallery[activeIndex].caption}
-        </p>
       )}
-
-      {/* LEFT ARROW */}
-      <button
-        onClick={() =>
-          setActiveIndex((prev) =>
-            prev === 0 ? gallery.length - 1 : (prev ?? 0) - 1
-          )
-        }
-        className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl"
-      >
-        ‹
-      </button>
-
-      {/* RIGHT ARROW */}
-      <button
-        onClick={() =>
-          setActiveIndex((prev) =>
-            prev === gallery.length - 1 ? 0 : (prev ?? 0) + 1
-          )
-        }
-        className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl"
-      >
-        ›
-      </button>
-
-      {/* CLOSE */}
-      <button
-        onClick={() => setActiveIndex(null)}
-        className="absolute top-4 right-4 text-white text-3xl"
-      >
-        ✕
-      </button>
-
     </div>
-  </div>
-)}
-
-    </main>
   );
 }

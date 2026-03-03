@@ -1,5 +1,9 @@
-import photo from './photo'
+import photo from "./photo";
+import category from "./category";
+import subcategory from "./subcategory";
 
-export const schema = {
-  types: [photo],
-}
+export const schemaTypes = [
+  photo,
+  category,
+  subcategory,
+];
