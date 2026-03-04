@@ -8,7 +8,7 @@ export default function AboutPage() {
 
       <div className="space-y-6 text-white/70 leading-relaxed text-lg">
         <p>
-          I am a photographer documenting personal archives and commercial work.
+          I am a hobby photographer documenting personal archives and commercial work.
         </p>
 
         <p>

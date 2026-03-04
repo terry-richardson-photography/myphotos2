@@ -16,7 +16,7 @@ export default async function CategoryPage({
   if (!category) redirect("/");
 
   const subcategories = await sanityServerClient.fetch(
-    `*[_type == "subcategory" && category == $category]{
+    `*[_type == "subcategory" && category->slug.current == $category]{
       _id,
       title,
       slug,
@@ -38,7 +38,7 @@ export default async function CategoryPage({
             No subcategories found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-16">
 
             {subcategories.map((sub: any) => (
               <Link
@@ -57,13 +57,13 @@ export default async function CategoryPage({
                       alt={sub.title}
                       width={1400}
                       height={900}
-                      className="rounded-2xl w-full h-auto group-hover:opacity-90 transition"
+                      className="rounded-2xl w-full h-auto transition duration-500 group-hover:opacity-90"
                     />
                   )}
 
-                  <div className="absolute bottom-6 left-6 text-white text-xl font-serif tracking-wide">
+                  <h2 className="mt-6 text-lg font-serif text-white/70 tracking-wide group-hover:text-white transition">
                     {sub.title}
-                  </div>
+                  </h2>
 
                 </div>
               </Link>

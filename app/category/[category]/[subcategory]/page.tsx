@@ -18,30 +18,24 @@ export default async function SubcategoryPage({
   // Fetch sessions that reference this subcategory
  // 1️⃣ Get the subcategory document first
 const subcategoryDoc = await sanityServerClient.fetch(
-  `*[_type == "subcategory" 
-     && slug.current == $subcategory 
-     && category == $category
-   ][0]{
+  `*[_type == "subcategory" && slug.current == $subcategory][0]{
      _id
    }`,
-  { subcategory, category }
+  { subcategory }
 );
 
 if (!subcategoryDoc?._id) redirect(`/category/${category}`);
 
-// 2️⃣ Now fetch sessions referencing it
+// 2️⃣ Fetch sessions referencing this subcategory
 const sessions = await sanityServerClient.fetch(
-  `*[_type == "photo"
-    && category == $category
-    && references($subcategoryId)
-  ]{
+  `*[_type == "photo" && references($subcategoryId)]{
     _id,
     title,
     slug,
-    coverImage,
+    sessionCover,
     password
   } | order(_createdAt desc)`,
-  { category, subcategoryId: subcategoryDoc._id }
+  { subcategoryId: subcategoryDoc._id }
 );
 
   return (
@@ -92,21 +86,21 @@ const sessions = await sanityServerClient.fetch(
                   )}
 
                   {/* Cover Image */}
-                  {session.coverImage && (
-                    <Image
-                      src={urlFor(session.coverImage)
-                        .width(1400)
-                        .quality(80)
-                        .format("webp")
-                        .url()}
-                      alt={session.title}
-                      width={1400}
-                      height={900}
-                      className="rounded-2xl w-full h-auto 
-                                 transition duration-500
-                                 group-hover:opacity-90"
-                    />
-                  )}
+                  {session.sessionCover && (
+  <Image
+    src={urlFor(session.sessionCover)
+      .width(1400)
+      .quality(80)
+      .format("webp")
+      .url()}
+    alt={session.title}
+    width={1400}
+    height={900}
+    className="rounded-2xl w-full h-auto 
+               transition duration-500
+               group-hover:opacity-90"
+  />
+)}
 
                   {/* Session Title */}
                   <h2 className="mt-8 text-lg font-serif text-white/70 
