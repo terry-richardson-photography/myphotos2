@@ -7,7 +7,6 @@ export default defineType({
 
   fields: [
 
-    // Session Title
     defineField({
       name: "title",
       title: "Session Title",
@@ -15,7 +14,6 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // Slug
     defineField({
       name: "slug",
       title: "Slug",
@@ -24,7 +22,6 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // Category
     defineField({
       name: "category",
       title: "Category",
@@ -36,13 +33,13 @@ export default defineType({
           { title: "General", value: "general" },
           { title: "Commercial", value: "commercial" },
           { title: "Sport", value: "sport" },
+          { title: "General-Photography", value: "general-photography" },
         ],
         layout: "dropdown",
       },
       validation: (Rule) => Rule.required(),
     }),
 
-    // Subcategory reference
     defineField({
       name: "subcategory",
       title: "Subcategory",
@@ -51,7 +48,6 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // Session Cover Image
     defineField({
       name: "sessionCover",
       title: "Session Cover Image",
@@ -59,14 +55,12 @@ export default defineType({
       options: { hotspot: true },
     }),
 
-    // Shoot Date
     defineField({
       name: "shootDate",
       title: "Shoot Date",
       type: "date",
     }),
 
-    // Description
     defineField({
       name: "description",
       title: "Description",
@@ -74,30 +68,21 @@ export default defineType({
       rows: 3,
     }),
 
-    // Password protection
     defineField({
       name: "password",
       title: "Session Password (Optional)",
       type: "string",
     }),
 
-    // Gallery
     defineField({
       name: "gallery",
       title: "Image Gallery",
       type: "array",
       of: [
         {
-          type: "object",
-          name: "imageWithCaption",
-          title: "Image",
+          type: "image",
+          options: { hotspot: true },
           fields: [
-            {
-              name: "image",
-              title: "Image",
-              type: "image",
-              options: { hotspot: true },
-            },
             {
               name: "caption",
               title: "Caption",
@@ -114,9 +99,8 @@ export default defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
 
-  ],
+  ],   // ← THIS WAS MISSING BEFORE
 
-  // ⭐ Preview in Studio lists
   preview: {
     select: {
       title: "title",

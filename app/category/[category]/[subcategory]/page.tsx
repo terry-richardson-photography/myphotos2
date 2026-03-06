@@ -4,7 +4,7 @@ import { sanityServerClient } from "@/lib/sanity";
 import { urlFor } from "@/lib/image";
 import { redirect } from "next/navigation";
 
-export const revalidate = 300; // ISR
+export const revalidate = 300;
 
 export default async function SubcategoryPage({
   params,
@@ -15,49 +15,52 @@ export default async function SubcategoryPage({
 
   if (!category || !subcategory) redirect("/");
 
+  // Get subcategory document
+  const subcategoryDoc = await sanityServerClient.fetch(
+    `*[_type == "subcategory" && slug.current == $subcategory][0]{
+      _id,
+      title
+    }`,
+    { subcategory }
+  );
+
+  if (!subcategoryDoc?._id) redirect(`/category/${category}`);
+
   // Fetch sessions that reference this subcategory
- // 1️⃣ Get the subcategory document first
-const subcategoryDoc = await sanityServerClient.fetch(
-  `*[_type == "subcategory" && slug.current == $subcategory][0]{
-     _id
-   }`,
-  { subcategory }
-);
+  const sessions = await sanityServerClient.fetch(
+    `*[_type == "photo" && references($subcategoryId)]{
+      _id,
+      title,
+      slug,
+      sessionCover,
+      password
+    } | order(_createdAt desc)`,
+    { subcategoryId: subcategoryDoc._id }
+  );
 
-if (!subcategoryDoc?._id) redirect(`/category/${category}`);
-
-// 2️⃣ Fetch sessions referencing this subcategory
-const sessions = await sanityServerClient.fetch(
-  `*[_type == "photo" && references($subcategoryId)]{
-    _id,
-    title,
-    slug,
-    sessionCover,
-    password
-  } | order(_createdAt desc)`,
-  { subcategoryId: subcategoryDoc._id }
-);
+  // Format category title
+  const categoryTitle =
+    category.replace("-", " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
     <main className="min-h-screen bg-black text-white px-6 py-20">
       <div className="max-w-7xl mx-auto">
 
-       {/* Back to Category */}
+        {/* Back to Category */}
+        <div className="sticky top-6 z-20 mb-16">
+          <Link
+            href={`/category/${category}`}
+            className="inline-flex items-center gap-2 
+                       text-white/60 text-xs uppercase tracking-widest
+                       hover:text-white transition duration-300"
+          >
+            ← Back to {categoryTitle}
+          </Link>
+        </div>
 
-<div className="sticky top-6 z-20 mb-16">
-  <Link
-    href={`/category/${category}`}
-    className="inline-flex items-center gap-2 
-               text-white/60 text-xs uppercase tracking-widest
-               hover:text-white transition duration-300"
-  >
-    ← Back to {category}
-  </Link>
-</div>
-
-        {/* Title */}
-        <h1 className="text-4xl md:text-5xl font-serif text-center mb-20 capitalize tracking-wide">
-          {subcategory}
+        {/* Subcategory Title */}
+        <h1 className="text-4xl md:text-5xl font-serif text-center mb-20 tracking-wide">
+          {subcategoryDoc.title}
         </h1>
 
         {/* Sessions Grid */}
@@ -87,20 +90,20 @@ const sessions = await sanityServerClient.fetch(
 
                   {/* Cover Image */}
                   {session.sessionCover && (
-  <Image
-    src={urlFor(session.sessionCover)
-      .width(1400)
-      .quality(80)
-      .format("webp")
-      .url()}
-    alt={session.title}
-    width={1400}
-    height={900}
-    className="rounded-2xl w-full h-auto 
-               transition duration-500
-               group-hover:opacity-90"
-  />
-)}
+                    <Image
+                      src={urlFor(session.sessionCover)
+                        .width(1400)
+                        .quality(80)
+                        .format("webp")
+                        .url()}
+                      alt={session.title}
+                      width={1400}
+                      height={900}
+                      className="rounded-2xl w-full h-auto 
+                                 transition duration-500
+                                 group-hover:opacity-90"
+                    />
+                  )}
 
                   {/* Session Title */}
                   <h2 className="mt-8 text-lg font-serif text-white/70 

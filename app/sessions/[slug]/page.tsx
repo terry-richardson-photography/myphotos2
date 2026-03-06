@@ -40,39 +40,63 @@ export default async function SessionPage({
     return <PasswordGate slug={slug} />;
   }
 
-  // Use first subcategory for navigation
   const firstSub = session.subcategory?.[0];
+
+  const categoryMap: Record<string, { slug: string; title: string }> = {
+  general: {
+    slug: "general-photography",
+    title: "General Photography",
+  },
+  family: {
+    slug: "family",
+    title: "Family",
+  },
+  travel: {
+    slug: "travel",
+    title: "Travel",
+  },
+  commercial: {
+    slug: "commercial",
+    title: "Commercial",
+  },
+  sport: {
+    slug: "sport",
+    title: "Sport",
+  },
+};
+
+const categoryData =
+  categoryMap[session.category] || {
+    slug: session.category,
+    title: session.category,
+  };
 
   return (
     <main className="min-h-screen bg-black text-white px-6 py-20">
       <div className="max-w-7xl mx-auto">
 
         {/* Back Navigation */}
-        <div className="mb-16 space-y-4">
+        <div className="mb-16">
 
           {firstSub ? (
             <Link
               href={`/category/${session.category}/${firstSub.slug.current}`}
-              className="inline-flex items-center gap-2 
-                         text-white/60 text-xs uppercase tracking-widest
-                         hover:text-white transition duration-300"
+              className="inline-flex items-center gap-2 text-white/60 text-xs uppercase tracking-widest hover:text-white transition"
             >
               ← Back to {firstSub.title}
             </Link>
           ) : (
-            <Link
-              href={`/category/${session.category}`}
-              className="inline-flex items-center gap-2 
-                         text-white/60 text-xs uppercase tracking-widest
-                         hover:text-white transition duration-300"
-            >
-              ← Back to {session.category}
-            </Link>
+           <Link
+  href={`/category/${categoryData.slug}`}
+  className="inline-flex items-center gap-2 text-white/60 text-xs uppercase tracking-widest hover:text-white transition"
+>
+  ← Back to {categoryData.title}
+</Link>
           )}
 
         </div>
 
-        {/* Gallery Component */}
+        {/* Gallery */}
         <Gallery session={session} />
 
       </div>
