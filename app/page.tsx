@@ -26,12 +26,35 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen">
 
-      {/* HERO */}
-      <section className="py-24 text-center px-6">
-        <h1 className="text-5xl md:text-6xl font-serif tracking-tight">
-          Terry Richardson Photography
-        </h1>
-      </section>
+   {/* HERO IMAGE */}
+
+<section className="relative h-[80vh] w-full overflow-hidden">
+
+  <Image
+    src="/hero.jpg"
+    alt="Terry Richardson Photography"
+    fill
+    priority
+   className="object-cover animate-heroCinematic"
+  />
+
+  <div className="absolute inset-0 bg-black/40"></div>
+
+  <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black"></div>
+
+  <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+
+    <h1 className="text-4xl md:text-6xl font-serif tracking-wide mb-4">
+      Terry Richardson Photography
+    </h1>
+
+    <p className="text-xs uppercase tracking-[0.35em] text-white/70">
+      Photographer • Adelaide South Australia
+    </p>
+
+  </div>
+
+</section>
 
       {/* CATEGORY GRID */}
       <section className="px-6 pb-24">
