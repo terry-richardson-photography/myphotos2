@@ -13,13 +13,6 @@ export const structure: StructureResolver = (S) =>
             .title("All Categories")
         ),
 
-      // Subcategories
-      S.documentTypeListItem("subcategory")
-        .title("Subcategories")
-        .child(
-          S.documentTypeList("subcategory")
-            .title("All Subcategories")
-        ),
 
       // Sessions
       S.documentTypeListItem("photo")

@@ -69,17 +69,16 @@ export default async function HomePage() {
               <div className="group cursor-pointer">
 
                 {category.coverImage && (
-                  <Image
-                    src={urlFor(category.coverImage)
-                      .width(1200)
-                      .quality(75)
-                      .format("webp")
-                      .url()}
-                    alt={category.title}
-                    width={1200}
-                    height={800}
-                    className="rounded-2xl object-cover h-72 w-full group-hover:opacity-90 transition duration-500"
-                  />
+                 
+  <Image
+  src={urlFor(category.coverImage).width(800).quality(80).url()}
+  alt={category.title}
+  width={800}
+  height={600}
+  loading="lazy"
+  sizes="(max-width:768px) 100vw, 33vw"
+  className="rounded-2xl w-full h-auto transition duration-500 group-hover:scale-105"
+/>
                 )}
 
                 <h2 className="mt-6 text-xl font-serif text-center tracking-wide">

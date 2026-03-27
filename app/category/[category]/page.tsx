@@ -4,8 +4,6 @@ import { sanityServerClient } from "@/lib/sanity";
 import { urlFor } from "@/lib/image";
 import { redirect } from "next/navigation";
 
-export const revalidate = 300;
-
 export default async function CategoryPage({
   params,
 }: {
@@ -15,13 +13,13 @@ export default async function CategoryPage({
 
   if (!category) redirect("/");
 
-  const subcategories = await sanityServerClient.fetch(
-    `*[_type == "subcategory" && category->slug.current == $category]{
+  const photos = await sanityServerClient.fetch(
+    `*[_type == "photo" && category->slug.current == $category] | order(_createdAt desc){
       _id,
       title,
       slug,
       coverImage
-    } | order(title asc)`,
+    }`,
     { category }
   );
 
@@ -33,41 +31,50 @@ export default async function CategoryPage({
           {category}
         </h1>
 
-        {subcategories.length === 0 ? (
+        {photos.length === 0 ? (
           <div className="text-center text-white/50">
-            No subcategories found.
+            No photos found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
 
-            {subcategories.map((sub: any) => (
-              <Link
-                key={sub._id}
-                href={`/category/${category}/${sub.slug.current}`}
-              >
-                <div className="group cursor-pointer relative">
+            {photos.map((photo: any) => {
+              const slug = photo.slug?.current;
 
-                  {sub.coverImage && (
-                    <Image
-                      src={urlFor(sub.coverImage)
-                        .width(1400)
-                        .quality(80)
-                        .format("webp")
-                        .url()}
-                      alt={sub.title}
-                      width={1400}
-                      height={900}
-                      className="rounded-2xl w-full h-auto transition duration-500 group-hover:opacity-90"
-                    />
-                  )}
+              return (
+                <Link
+                  key={photo._id}
+                  href={slug ? `/photo/${slug}` : "#"}
+                  className="group"
+                >
+                  <div className="overflow-hidden rounded-2xl">
 
-                  <h2 className="mt-6 text-lg font-serif text-white/70 tracking-wide group-hover:text-white transition">
-                    {sub.title}
+                    {photo.coverImage ? (
+                      <Image
+                        src={urlFor(photo.coverImage)
+                          .width(1200)
+                          .quality(80)
+                          .url()}
+                        alt={photo.title || "Photo"}
+                        width={1200}
+                        height={800}
+                        className="w-full h-auto transition duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-[300px] bg-white/10 flex items-center justify-center text-white/40">
+                        No Image
+                      </div>
+                    )}
+
+                  </div>
+
+                  <h2 className="mt-4 text-lg font-serif text-white/70 group-hover:text-white">
+                    {photo.title || "Untitled"}
                   </h2>
 
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
 
           </div>
         )}

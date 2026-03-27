@@ -22,61 +22,26 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
 
+    // ✅ Category as reference
     defineField({
       name: "category",
       title: "Category",
-      type: "string",
-      options: {
-        list: [
-          { title: "Family", value: "family" },
-          { title: "Travel", value: "travel" },
-          { title: "General", value: "general" },
-          { title: "Commercial", value: "commercial" },
-          { title: "Sport", value: "sport" },
-          { title: "General-Photography", value: "general-photography" },
-        ],
-        layout: "dropdown",
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-
-    defineField({
-      name: "subcategory",
-      title: "Subcategory",
       type: "reference",
-      to: [{ type: "subcategory" }],
+      to: [{ type: "category" }],
       validation: (Rule) => Rule.required(),
     }),
 
     defineField({
-      name: "sessionCover",
-      title: "Session Cover Image",
+      name: "coverImage",
+      title: "Cover Image",
       type: "image",
       options: { hotspot: true },
     }),
 
+    // ✅ Images with captions
     defineField({
-      name: "shootDate",
-      title: "Shoot Date",
-      type: "date",
-    }),
-
-    defineField({
-      name: "description",
-      title: "Description",
-      type: "text",
-      rows: 3,
-    }),
-
-    defineField({
-      name: "password",
-      title: "Session Password (Optional)",
-      type: "string",
-    }),
-
-    defineField({
-      name: "gallery",
-      title: "Image Gallery",
+      name: "images",
+      title: "Images",
       type: "array",
       of: [
         {
@@ -99,22 +64,12 @@ export default defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
 
-  ],   // ← THIS WAS MISSING BEFORE
+  ],
 
   preview: {
     select: {
       title: "title",
-      media: "sessionCover",
-      category: "category",
-      subcategory: "subcategory.title",
-    },
-
-    prepare({ title, media, category, subcategory }) {
-      return {
-        title,
-        subtitle: `${category || "Category"} → ${subcategory || "Subcategory"}`,
-        media,
-      };
+      media: "coverImage",
     },
   },
 });
