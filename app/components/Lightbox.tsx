@@ -67,29 +67,44 @@ export default function Lightbox({
       >
 
         {/* IMAGE */}
-        <motion.div
-          key={index}
-          className="relative max-w-6xl w-full px-6 text-center"
-          initial={{ opacity: 0, x: direction * 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: direction * -40 }}
-          transition={{ duration: 0.35, ease: "easeInOut" }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Image
-            src={current.src}
-            alt=""
-            width={1600}
-            height={1000}
-            className="w-full h-auto rounded-lg"
-          />
+      
+      <motion.div
+  key={index}
+  className="relative max-w-6xl w-full px-6 text-center"
+  initial={{ opacity: 0, x: direction * 40 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={{ opacity: 0, x: direction * -40 }}
+  transition={{ duration: 0.45, ease: "easeInOut" }}
+  onClick={(e) => e.stopPropagation()}
+>
 
-          {current.caption && (
-            <p className="mt-4 text-white/70 text-sm">
-              {current.caption}
-            </p>
-          )}
-        </motion.div>
+  {/* 🔢 IMAGE COUNTER */}
+  <div
+    className="
+      absolute top-6 left-1/2 -translate-x-1/2 z-50
+      px-3 py-1
+      bg-black/40 backdrop-blur-md
+      rounded-full
+      text-white/80 text-xs tracking-wider
+    "
+  >
+    {index + 1} / {images.length}
+  </div>
+
+  <Image
+    src={current.src}
+    alt=""
+    width={1600}
+    height={1000}
+    className="w-full h-auto rounded-lg"
+  />
+
+  {current.caption && (
+    <p className="mt-4 text-white/70 text-sm">
+      {current.caption}
+    </p>
+  )}
+</motion.div>
 
         {/* ← LEFT */}
         <button
@@ -119,7 +134,7 @@ export default function Lightbox({
             e.stopPropagation();
             onClose();
           }}
-          className="absolute top-6 right-6 z-50 text-white text-2xl"
+          className="absolute top-10 right-6 z-50 text-white text-2xl"
         >
           ✕
         </button>
