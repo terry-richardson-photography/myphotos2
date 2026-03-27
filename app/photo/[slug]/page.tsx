@@ -13,6 +13,7 @@ export default async function PhotoPage({
   `*[_type == "photo" && slug.current == $slug][0]{
     _id,
     title,
+    "categoryTitle": category->title,
     "categorySlug": category->slug.current,
     images[]
   }`,

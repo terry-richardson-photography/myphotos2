@@ -15,6 +15,12 @@ export default defineType({
     }),
 
     defineField({
+  name: "password",
+  title: "Session Password (Optional)",
+  type: "string",
+}),
+
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",

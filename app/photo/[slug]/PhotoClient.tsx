@@ -5,10 +5,20 @@ import Lightbox from "@/app/components/Lightbox";
 import { urlFor } from "@/lib/image";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import PasswordGate from "./PasswordGate";
 
 export default function PhotoClient({ photo }: any) {
   const [index, setIndex] = useState<number | null>(null);
   const router = useRouter();
+
+  const password = photo.password || "";
+  const storageKey = `gallery-${photo._id}`; // ✅ FIX ADDED
+
+  const [unlocked, setUnlocked] = useState(
+    typeof window !== "undefined"
+      ? sessionStorage.getItem(storageKey) === "true" || !password
+      : !password
+  );
 
   const imgs = photo.images || [];
 
@@ -25,39 +35,51 @@ export default function PhotoClient({ photo }: any) {
     })
     .filter(Boolean);
 
+  // 🔐 PASSWORD GATE
+  if (!unlocked) {
+    return (
+      <PasswordGate
+        correctPassword={password}
+        onSuccess={() => {
+          sessionStorage.setItem(storageKey, "true"); // ✅ FIX USES KEY
+          setUnlocked(true);
+        }}
+      />
+    );
+  }
+
   return (
     <main className="bg-black text-white relative">
 
-  {/* 🔙 BACK BUTTON */}
-<div
-  className="
-    fixed top-6 left-6 z-50
-    px-5 py-2.5
-    border border-white/20
-    rounded-full
-    text-white/70
-    hover:text-white
-    hover:border-white/50
-    backdrop-blur-md
-    bg-white/10
-    shadow-lg
-    transition
-    text-sm tracking-wide
-  "
->
-  <button
-    onClick={() => {
-      if (photo.categorySlug) {
-        router.push(`/category/${photo.categorySlug}`);
-      } else {
-        router.back();
-      }
-    }}
-  >
-    ← Back to {photo.categoryTitle || "Gallery"}
-  </button>
-</div>
-      
+      {/* 🔙 BACK BUTTON */}
+      <div
+        className="
+          fixed top-6 left-6 z-50
+          px-5 py-2.5
+          border border-white/20
+          rounded-full
+          text-white/70
+          hover:text-white
+          hover:border-white/50
+          backdrop-blur-md
+          bg-white/10
+          shadow-lg
+          transition
+          text-sm tracking-wide
+        "
+      >
+        <button
+          onClick={() => {
+            if (photo.categorySlug) {
+              router.push(`/category/${photo.categorySlug}`);
+            } else {
+              router.back();
+            }
+          }}
+        >
+          ← Back to {photo.categoryTitle || "Gallery"}
+        </button>
+      </div>
 
       {/* HERO */}
       <div className="h-[70vh] flex items-center justify-center">
