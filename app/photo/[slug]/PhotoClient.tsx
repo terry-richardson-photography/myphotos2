@@ -99,7 +99,7 @@ console.log("PHOTO PASSWORD:", photo.password);
   >
 
     {/* 🔒 WATERMARK */}
-   {photo.password?.length > 0 && (
+   {(photo.password || photo.watermark) && (
   <div className="absolute inset-0 z-20 pointer-events-none flex flex-wrap items-center justify-center">
     
     {/* Dark overlay for contrast */}

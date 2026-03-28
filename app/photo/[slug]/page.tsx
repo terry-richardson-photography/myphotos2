@@ -13,9 +13,10 @@ export default async function PhotoPage({
   `*[_type == "photo" && slug.current == $slug][0]{
     _id,
     title,
-    password, // 👈 MUST BE HERE
+    password,
     "categoryTitle": category->title,
     "categorySlug": category->slug.current,
+    "watermark": category->watermark,
     images[]
   }`,
   { slug }

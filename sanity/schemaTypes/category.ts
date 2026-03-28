@@ -20,6 +20,13 @@ export default defineType({
     }),
 
     defineField({
+  name: "watermark",
+  title: "Enable Watermark",
+  type: "boolean",
+  initialValue: false,
+}),
+
+    defineField({
       name: "coverImage",
       title: "Category Cover Image",
       type: "image",

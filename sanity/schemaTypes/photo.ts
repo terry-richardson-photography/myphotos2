@@ -19,6 +19,12 @@ export default defineType({
   title: "Session Password (Optional)",
   type: "string",
 }),
+defineField({
+  name: "watermark",
+  title: "Enable Watermark",
+  type: "boolean",
+  initialValue: false,
+}),
 
     defineField({
       name: "slug",
