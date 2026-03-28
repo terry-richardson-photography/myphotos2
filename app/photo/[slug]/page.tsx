@@ -9,14 +9,16 @@ export default async function PhotoPage({
 }) {
   const { slug } = await params;
 
-  const photo = await sanityServerClient.fetch(
+ const photo = await sanityServerClient.fetch(
   `*[_type == "photo" && slug.current == $slug][0]{
     _id,
     title,
+    description,
+    coverImage,
     password,
+    watermark,
     "categoryTitle": category->title,
     "categorySlug": category->slug.current,
-    "watermark": category->watermark,
     images[]
   }`,
   { slug }

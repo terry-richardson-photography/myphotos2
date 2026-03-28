@@ -26,6 +26,13 @@ defineField({
   initialValue: false,
 }),
 
+defineField({
+  name: "description",
+  title: "Session Description",
+  type: "text",
+  rows: 3,
+}),
+
     defineField({
       name: "slug",
       title: "Slug",
