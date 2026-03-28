@@ -20,6 +20,7 @@ export default function PhotoClient({ photo }: any) {
   // ✅ Parallax
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 80], [0, 120]);
+  const opacity = useTransform(scrollY, [0, 200], [1, 0.6]);
 
   useEffect(() => {
     if (password) {
@@ -78,7 +79,10 @@ export default function PhotoClient({ photo }: any) {
       <section className="relative h-[80vh] w-full overflow-hidden">
 
         {photo.coverImage && (
-          <motion.div style={{ y }} className="absolute inset-0">
+          <motion.div
+  style={{ y, opacity }}
+  className="absolute inset-0"
+>
             <Image
               src={urlFor(photo.coverImage).width(2000).quality(90).url()}
               alt={photo.title}
