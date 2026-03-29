@@ -122,22 +122,23 @@ export default function PhotoClient({ photo }: any) {
             className="relative overflow-hidden rounded-xl cursor-pointer group"
             onClick={() => setIndex(i)}
           >
+ {/* 🔒 WATERMARK */}
+{photo.watermark && (
+  <div className="absolute inset-0 z-20 pointer-events-none flex flex-wrap items-center justify-center">
+    
+    <div className="absolute inset-0 bg-black/10" />
 
-            {/* 🔒 WATERMARK */}
-            {(photo.password || photo.watermark) && (
-              <div className="absolute inset-0 z-20 pointer-events-none flex flex-wrap items-center justify-center">
-                <div className="absolute inset-0 bg-black/10" />
-
-                {Array.from({ length: 9 }).map((_, j) => (
-                  <span
-                    key={j}
-                    className="w-1/3 text-center text-lg md:text-2xl rotate-[-20deg] select-none text-white/30 font-serif tracking-widest"
-                  >
-                    Terry Richardson Photography
-                  </span>
-                ))}
-              </div>
-            )}
+    {Array.from({ length: 9 }).map((_, j) => (
+      <span
+        key={j}
+        className="w-1/3 text-center text-lg md:text-2xl rotate-[-20deg] select-none text-white/30 font-serif tracking-widest"
+      >
+        Terry Richardson Photography
+      </span>
+    ))}
+    
+  </div>
+)}
 
             {/* IMAGE */}
             <Image
